@@ -1,10 +1,5 @@
-<div class="wrap">
-            <h1>Hola!</h1>
-            <p>Aquesta és la primera pàgina del plugin</p>
-
-        </div>
-
 <?php
+database_table_example_page();
 
 function data_table($db_data)
 {
@@ -47,14 +42,14 @@ function database_table_example_page()
 
     // example query: ALUMNES DEL CENTRE
     global $wpdb;
-    $query = "SELECT $wpdb->alumnes.*
-        FROM $wpdb->alumnes";
-    $result = $wpdb->get_results($query, ARRAY_N);
+    $query = "SELECT alumnes.dni as dni, alumnes.nom, alumnes.cognoms, alumnes.telefon
+        FROM alumnes";
+    $result = $wpdb->get_results($query, ARRAY_A);
 
     ?>
         <div class="wrap">
             <h1>Hola!</h1>
-            <p>Aquesta  és la primera pàgina del plugin</p>
+            <p>Aquesta és la primera pàgina del plugin</p>
 
             <?php data_table($result); ?>
         </div>
