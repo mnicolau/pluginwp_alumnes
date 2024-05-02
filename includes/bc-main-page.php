@@ -1,6 +1,12 @@
-<?php
-database_table_example_page();
+<div class="wrap">
+    <h1>Hola!</h1>
+    <p>Aquesta és la primera pàgina del plugin</p>
 
+    <?php data_table(obtenirAlumnes()); ?>
+</div>
+
+
+<?php
 function data_table($db_data)
 {
     if (!is_array($db_data) || empty($db_data))
@@ -36,26 +42,12 @@ function data_table($db_data)
     return true;
 }
 
-/* Example usage with a menu page */
-function database_table_example_page()
-{
 
-    // example query: ALUMNES DEL CENTRE
+function obtenirAlumnes() {
     global $wpdb;
     $query = "SELECT alumnes.dni as dni, alumnes.nom, alumnes.cognoms, alumnes.telefon
         FROM alumnes";
     $result = $wpdb->get_results($query, ARRAY_A);
 
-    ?>
-        <div class="wrap">
-            <h1>Hola!</h1>
-            <p>Aquesta és la primera pàgina del plugin</p>
-
-            <?php data_table($result); ?>
-        </div>
-        
-    <?php
+    return $result;
 }
-
-
-?>
