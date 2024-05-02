@@ -49,8 +49,8 @@ function database_table_example_page()
 
     ?>
         <div class="wrap">
-            <h1>Hola!</h1>
-            <p>Aquesta és la primera pàgina del plugin</p>
+            <h1>Gestió alumnes</h1>
+            <p>Llistat d'alumnes</p>
 
             <?php data_table($result); ?>
         </div>

@@ -1,12 +1,32 @@
-<div class="wrap">
-    <h1>Hola!</h1>
-    <p>Aquesta és la primera pàgina del plugin</p>
+<?php
+require_once (BC_DIR . 'includes/bc-alumnes-table.php');
+?>
 
-    <?php data_table(obtenirAlumnes()); ?>
+
+<div class="wrap">
+    <h1>Gestió d'alumnes</h1>
+    <p>Llista d'alumnes</p>
+
+    <?php showDataTable(obtenirAlumnes()); ?>
 </div>
 
 
 <?php
+
+function showDataTable($rows)
+{
+    $myListTable = new BCTable();
+    $myListTable->set_rows($rows);
+    $myListTable->prepare_items();
+    ?>
+    <form method="post">
+        <input type="hidden" name="page" value="my_list_test" />
+        <?php $myListTable->search_box('Cercar', 'search_id'); ?>
+    </form>
+    <?php $myListTable->display();
+}
+
+
 function data_table($db_data)
 {
     if (!is_array($db_data) || empty($db_data))
@@ -41,12 +61,12 @@ function data_table($db_data)
 
     return true;
 }
- 
 
-function obtenirAlumnes() {
+function obtenirAlumnes()
+{
     global $wpdb;
-    $query = "SELECT alumnes.dni as dni, alumnes.nom, alumnes.cognoms, alumnes.telefon
-        FROM alumnes";
+    $query = "SELECT bc_alumnes.id as id, bc_alumnes.dni as dni, bc_alumnes.nom, bc_alumnes.cognoms, bc_alumnes.estudis
+        FROM bc_alumnes";
     $result = $wpdb->get_results($query, ARRAY_A);
 
     return $result;
