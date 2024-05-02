@@ -17,4 +17,4 @@ function bc_Add_Admin_Link() {
                      BC_DIR.'includes/bc-main-page.php');
     //remove_submenu_page( BC_DIR.'includes/bc-main-page.php',BC_DIR.'includes/bc-main-page.php' );
 
-}
+} 

@@ -41,7 +41,7 @@ function data_table($db_data)
 
     return true;
 }
-
+ 
 
 function obtenirAlumnes() {
     global $wpdb;

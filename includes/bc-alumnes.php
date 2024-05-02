@@ -3,7 +3,7 @@
 database_table_example_page();
 
 function data_table($db_data)
-{
+{ 
     if (!is_array($db_data) || empty($db_data))
         return false;
 
