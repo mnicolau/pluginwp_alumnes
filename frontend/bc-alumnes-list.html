@@ -1,0 +1,32 @@
+<h1>Llista alumnes</h1>
+<table id="llistaAlumnes">
+    <thead>
+        <tr>
+            <th>DNI</th>
+            <th>Nom</th>
+            <th>Cognoms</th>
+            <th>Estudis</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!--%alumnes%-->
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>DNI</th>
+            <th>Nom</th>
+            <th>Cognoms</th>
+            <th>Estudis</th>
+        </tr>
+    </tfoot>
+</table>
+<script>
+    $(document).ready(function () {
+
+        $('#llistaAlumnes').DataTable({
+            ajax: 'bc-get-alumnes.php',
+            processing: true,
+            serverSide: true
+        });
+    });
+</script>
