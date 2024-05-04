@@ -5,8 +5,16 @@
  */
 function libs_import()
 {
-  wp_enqueue_style('datatable-style', 'https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.css', '1.10.18', true);
-  wp_enqueue_script('datatable-script', 'https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/js/jquery.dataTables.min.js', array('jquery'));
+  //wp_enqueue_style('datatable-style', 'https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.css', '1.10.18', true);
+  wp_enqueue_style('datatable-style', ' https://cdn.datatables.net/2.0.6/css/dataTables.dataTables.css', '5.3.0', true);
+  wp_enqueue_style('datatable-style-2', 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css', '5.3.0', true);
+  wp_enqueue_style('datatable-style-3', 'https://cdn.datatables.net/2.0.6/css/dataTables.bootstrap5.css', '2.0.6', true);
+  
+  //wp_enqueue_script('datatable-script', 'https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/js/jquery.dataTables.min.js', array('jquery'));
+  wp_enqueue_script('datatable-script-2', 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js', array('jquery'));
+  wp_enqueue_script('datatable-script-3', 'https://cdn.datatables.net/2.0.6/js/dataTables.js', array('jquery'));
+  wp_enqueue_script('datatable-script-4', 'https://cdn.datatables.net/2.0.6/js/dataTables.bootstrap5.js', array('jquery'));
+
   wp_register_script('bc-alumnes-script', plugins_url('bc-alumnes/js/alumnes.js'), array(), '1.0', true);
 
   wp_localize_script('bc-alumnes-script', 'ajaxobj', array('url' => admin_url('admin-ajax.php')));
@@ -56,7 +64,7 @@ add_shortcode('alumnes', 'alumnes_table');
 function alumnes_table()
 {
   ob_start(); ?>
-  <table id="llistaAlumnes" class="stripe" style="width:100%">
+  <table id="llistaAlumnes" class="table table-striped" style="width:100%">
     <thead>
       <tr>
         <th>DNI</th>
