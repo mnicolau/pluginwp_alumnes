@@ -9,3 +9,4 @@ define("BC_DIR", plugin_dir_path(__FILE__) );
 
 require_once ( BC_DIR . 'includes/data-table.php' ); 
 require_once ( BC_DIR . 'includes/bc-functions.php' ); 
+require_once ( BC_DIR . 'public/bc-functions.php' ); 

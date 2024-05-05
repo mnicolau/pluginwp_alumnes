@@ -1,21 +1,29 @@
 <?php
-// Loading WP_List_Table class file
-// We need to load it as it's not automatically loaded by WordPress
+// Carregar el fitxer de la classe WP_List_Table (nucli del WordPress)
 if (!class_exists('WP_List_Table')) {
     require_once (ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
 }
+/**
+ * Classe que hereda de WP_List_Table
+ * 
+ * Afegeix atributs i mètodes a la classe base per adapart-ho a les necessitats pròpies.
+ */
 class DataTable extends WP_List_Table
 {
-    var $table_data;
-    var $table_name;
-    var $columns;
-    var $sortable_columns;
-    var $default_sort_column;
-
-    var $column_links;
-
-    var $column_name_links;
-
+    /**
+     * Atributs de la classe
+     */
+    var $table_data;        // referència a les dades que ha de mostrar la taula
+    var $table_name;        // nom de la taula de la BD que es vol consultar
+    var $columns;           // llista de columnes que mostrarà la taula
+    var $sortable_columns;  // llista de columnes que es poden ordenar
+    var $default_sort_column;   // columna amb què s'ordena per defecte
+    var $column_links;      // columna que conté les opcions Edit i Remove      
+    var $column_name_links; // String amb el codi HTML dels enllaços Edit i Remove
+    var $edit_form;         // String amb el nom del formulari d'edició
+    /**
+     * Setter / Getter del nom de la taula
+     */
     function set_table_name($name)
     {
         $this->table_name = $name;
@@ -25,7 +33,23 @@ class DataTable extends WP_List_Table
     {
         return $this->table_name;
     }
+    /**
+     * Setter / Getter del formulari d'edició
+     */
+    function set_edit_form($form_name)
+    {
+        $this->edit_form = $form_name;
+    }
 
+    function get_edit_form()
+    {
+        return $this->edit_form;
+    }
+
+
+    /**
+     * Setter / Getter de la llista de columnes
+     */
     function set_columns($columns)
     {
         $this->columns = $columns;
@@ -36,55 +60,47 @@ class DataTable extends WP_List_Table
         return $this->columns;
     }
 
-    function set_column_links($value) {
+    /**
+     * Setter amb la columna que conté els enllaços Edit/Remove
+     */
+    function set_column_links($value)
+    {
         $this->column_links = $value;
     }
-
-    function set_column_name_links($value){
+    /**
+     * Setter amb el codi HTML que  conté els enllaços Edit/Remove
+     */
+    function set_column_name_links($value)
+    {
         $this->column_name_links = $value;
     }
 
+    /**
+     * Mètode sobreescrit que obté les dades i configura  la taula
+     */
     function prepare_items()
     {
-        global $wpdb;
-        //$table_name = 'bc_alumnes';
         $paged = isset($_REQUEST['paged']) ? max(0, intval($_REQUEST['paged']) - 1) : 0;
         $per_page = $this->get_items_per_page('elements_per_page', 10);
-
+        // Si hi ha cadena de cerca (filtre)
         if (isset($_POST['s'])) {
             $this->table_data = $this->get_table_data($per_page, $paged, $_POST['s']);
         } else {
             $this->table_data = $this->get_table_data($per_page, $paged);
         }
         $columns = $this->get_columns();
-        $hidden = array();
         $sortable = $this->get_sortable_columns();
         $primary = $this->default_sort_column;
+        $hidden = array();
         $this->_column_headers = array($columns, $hidden, $sortable, $primary);
 
         usort($this->table_data, array(&$this, 'usort_reorder'));
 
-        $hidden = (
-            is_array(
-                get_user_meta(
-                    get_current_user_id(),
-                    'managetoplevel_page_supporthost_list_tablecolumnshidden',
-                    true
-                )
-            )
-        ) ?
-            get_user_meta(get_current_user_id(), 'managetoplevel_page_supporthost_list_tablecolumnshidden', true) :
-            array();
-
         $current_page = $this->get_pagenum();
         $total_items = count($this->table_data);
-
+        // Agafar les dades que toquen per la pàgina actual
         //$found_data = array_slice($dades, (($current_page - 1) * $per_page), $per_page);
         //$this->found_data = $this->rows;
-
-        $orderby = (isset($_REQUEST['orderby']) && in_array($_REQUEST['orderby'], array_keys($this->get_sortable_columns()))) ? $_REQUEST['orderby'] : 'id';
-        $order = (isset($_REQUEST['order']) && in_array($_REQUEST['order'], array('asc', 'desc'))) ? $_REQUEST['order'] : 'asc';
-
         $this->table_data = array_slice($this->table_data, (($current_page - 1) * $per_page), $per_page);
 
         $this->set_pagination_args(
@@ -96,23 +112,29 @@ class DataTable extends WP_List_Table
         );
 
         $this->items = $this->table_data;
-
     }
 
+    /**
+     * Mètode sobreescrit per retornar el text a mostrar per defecte de cada  columna 
+     * i de la columna que ha de contindre els enllaços Edit / Remove
+     */
     function column_default($item, $column_name)
     {
         if (isset($column_name) && $column_name == $this->column_name_links) {
             $actions = array(
-                'edit' => sprintf('<a href="?page=%s&action=%s&%s=%s">Editar</a>', $_REQUEST['page'], 'edit', $this->table_name, $item['id']),
+                'edit' => sprintf('<a href="?page=%s&action=%s&%s=%s">Editar</a>', $this->get_edit_form(), 'edit', $this->table_name, $item['id']),
                 'delete' => sprintf('<a href="?page=%s&action=%s&%s=%s">Esborrar</a>', $_REQUEST['page'], 'delete', $this->table_name, $item['id']),
             );
-        
+
             return sprintf('%1$s %2$s', $item[$column_name], $this->row_actions($actions));
         } else {
             return $item[$column_name];
-        } 
+        }
     }
 
+    /**
+     * Getter / Setter de les columnes ordenables
+     */
     function get_sortable_columns()
     {
         return $this->sortable_columns;
@@ -123,6 +145,9 @@ class DataTable extends WP_List_Table
         $this->sortable_columns = $sortable_columns;
     }
 
+    /**
+     * Setter / Getter de la columna per la qual s'ordena per defecte
+     */
     function set_default_sort_column($column_name)
     {
         $this->default_sort_column = $column_name;
@@ -133,6 +158,9 @@ class DataTable extends WP_List_Table
         return !empty($this->default_sort_column) ? $this->default_sort_column : "id";
     }
 
+    /** 
+     * Mètode que s'invoca per ordenar el contingut d'una columna
+     */
     function usort_reorder($a, $b)
     {
         // Si no s'indica columna, per defecte els cognoms
@@ -146,44 +174,38 @@ class DataTable extends WP_List_Table
         return ($order === 'asc') ? $result : -$result;
     }
 
-    
-    // Get table data
+
+    /**
+     * Mètode per obtenir les dades la taula, amb un nombre de registres per pàgina i criteris de cerca
+     */
     private function get_table_data($per_page, $paged, $search = '')
     {
         global $wpdb;
 
         if (!empty($search)) {
             return
-                $wpdb->get_results(
-                    "SELECT * from $this->table_name",
-                    ARRAY_A
-                );
-            /*$wpdb->get_results(
-                "SELECT * from $this->table_name WHERE name Like '%{$search}%' OR description Like '%{$search}%' OR status Like '%{$search}%'",
-                ARRAY_A
-            );*/
+                $wpdb->get_results("SELECT * from $this->table_name", ARRAY_A);
         } else {
-
-
             return $wpdb->get_results($wpdb->prepare("SELECT * 
-                                                        FROM {$this->table_name} 
+                                                        FROM $this->table_name 
                                                         LIMIT %d OFFSET %d", $per_page, $paged), ARRAY_A);
         }
     }
 
-    // Plugin menu callback function
-    function supporthost_list_init()
+    /**
+     * Esborra un conjunt de files
+     * 
+     * @param $ids array d'ID que es volen eliminar
+     */
+    public function delete_data($ids)
     {
-        // Creating an instance
-        $table = new Supporthost_List_Table();
+        global $wpdb;
 
-        echo '<div class="wrap"><h2>SupportHost Admin Table</h2>';
-        echo '<form method="post">';
-        // Prepare table
-        $table->prepare_items();
-        // Display table
-        $table->display();
-        echo '</div></form>';
+        if (!empty($ids)) {
+            $str = "DELETE FROM $this->table_name WHERE id IN($ids)";
+            return $wpdb->query($str);
+        }
+        return false;
     }
 }
 
