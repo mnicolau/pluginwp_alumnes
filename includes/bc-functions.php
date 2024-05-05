@@ -14,7 +14,7 @@ function bc_Add_Admin_Link()
 
   $bc_alumnes_page = add_menu_page(
     'Alumnes Bosc de la Coma', // Title of the page
-    'Bosc de la Coma Plugin', // Text to show on the menu link
+    'Alumnes BC', // Text to show on the menu link
     'manage_options', // Capability requirement to see the link
     BC_DIR . 'admin/bc-main-page.php' // The 'slug' - file to display when clicking the link
   );

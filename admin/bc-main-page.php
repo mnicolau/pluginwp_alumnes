@@ -10,7 +10,7 @@ showDataTable();
 
 <?php
 /**
- * Mètode per crear, configura i mostrar la taula amb les dades dels alumnes
+ * Mètode per crear, configurar i mostrar la taula amb les dades dels alumnes
  */
 function showDataTable()
 {
@@ -18,10 +18,11 @@ function showDataTable()
     $taula->init();
 
     $message = '';
+    // s'hi ha alguna acció d'esborrat pendent, s'executa i es mostra el missatge si és correcte.
     if ($taula->processar_delete()) {
         $message = '<div class="updated below-h2" id="message"><p>S\'ha esborrat 1 alumne</p></div>';
     }
-
+    // mostrar la pàgina a continuació...
     ?>
     <div class="wrap">
         <h1>Gestió d'alumnes <a class="add-new-h2"
