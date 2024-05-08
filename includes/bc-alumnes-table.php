@@ -52,4 +52,19 @@ class AlumnesTable extends DataTable
         return false;
     }
 
+    function processar_edit()
+    {
+        if ('edit' === $this->current_action()) {
+            
+            $ids = isset($_REQUEST['bc_alumnes']) ? $_REQUEST['bc_alumnes'] : array();
+            if (is_array($ids))
+                $ids = implode(',', $ids);
+            else
+                $ids = $_REQUEST['bc_alumnes'];
+
+            return $this->delete_data($ids);
+        }
+        return false;
+    }
+
 }

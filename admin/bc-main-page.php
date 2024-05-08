@@ -1,20 +1,43 @@
 <?php
 require_once (BC_DIR . 'includes/bc-alumnes-table.php');
-
-
-showDataTable();
-
 ?>
-
-
+<div class="wrap">
+    <h1>Gestió d'alumnes <a class="add-new-h2"
+            href="<?php echo get_admin_url(get_current_blog_id(), 'admin.php?page=alumnes_form'); ?>"><?php _e('Afegir', 'alumnes') ?></a>
+    </h1>
+    <?php showDataTable(); ?>
+</div>
 
 <?php
+
 /**
  * Mètode per crear, configurar i mostrar la taula amb les dades dels alumnes
  */
 function showDataTable()
 {
-    $taula = new AlumnesTable();
+    $taula = new DataTable();
+    $taula->set_table_name('bc_alumnes');
+    $taula->set_columns(
+        array(
+            'dni' => 'DNI',
+            'nom' => 'Nom',
+            'cognoms' => 'Cognoms',
+            'estudis' => 'Estudis'
+        )
+    );
+    $taula->set_sortable_columns(
+        array(
+            'dni' => array('dni', false),
+            'nom' => array('nom', false),
+            'cognoms' => array('cognoms', false),
+            'estudis' => array('estudis', false)
+        )
+    );
+    $taula->set_column_name_links('dni');
+    $taula->prepare_items();
+    $taula->display();
+
+    /*$taula = new AlumnesTable();
     $taula->init();
 
     $message = '';
@@ -22,24 +45,78 @@ function showDataTable()
     if ($taula->processar_delete()) {
         $message = '<div class="updated below-h2" id="message"><p>S\'ha esborrat 1 alumne</p></div>';
     }
-    // mostrar la pàgina a continuació...
+    // mostrar la pàgina a continuació...*/
     ?>
     <div class="wrap">
-        <h1>Gestió d'alumnes <a class="add-new-h2"
-                href="<?php echo get_admin_url(get_current_blog_id(), 'admin.php?page=alumnes_form'); ?>"><?php _e('Afegir', 'alumnes') ?></a>
-        </h1>
 
-        <?php echo $message; ?>
+
+        <?php //echo $message; ?>
         <form method="post">
             <input type="hidden" name="page" value="llista_hidden" />
-            <?php $taula->search_box('Cercar', 'search_id'); ?>
-            <?php $taula->display(); ?>
+            <?php //$taula->search_box('Cercar', 'search_id'); ?>
+            <?php //$taula->display(); ?>
         </form>
     </div>
 
     <?php
 }
 
+
+// Afegir accions per gestionar les peticions d'edició
+add_action('admin_init', 'bc_alumnes_processar_accions');
+
+function bc_alumnes_processar_accions() {
+    if (isset($_GET['action']) && isset($_GET['id'])) {
+        $action = $_GET['action'];
+        $id = $_GET['id'];
+
+        // Comprovar que l'usuari té permisos
+        if (!current_user_can('manage_options')) {
+            wp_die('Accés denegat');
+        }
+
+        // Processar l'acció d'edició
+        if ($action === 'edit') {
+            // Redirigir a una pàgina d'edició o fer les operacions necessàries
+            wp_redirect(admin_url('admin.php?page=b-alumnes&edit_id=' . $id));
+            exit();
+        }
+
+        // Procesar la acción de eliminación
+        if ($action === 'delete') {
+            // Realizar la eliminación en la base de datos
+            // Aquí necesitas implementar la lógica para eliminar el elemento con el ID proporcionado
+            // Por ejemplo:
+            // $resultado = eliminar_elemento($id);
+            // if ($resultado) {
+            //     // Elemento eliminado con éxito
+            //     wp_redirect(admin_url('admin.php?page=mi-plugin'));
+            //     exit();
+            // } else {
+            //     // Error al eliminar el elemento
+            //     wp_die('Error al eliminar el elemento');
+            // }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//---------------------------------------------------------
 
 function alumnes_alumnes_form_page_handler()
 {
@@ -140,7 +217,7 @@ function alumnes_alumnes_form_page_handler()
  *
  * @param $item
  */
-function alumnes_form_meta_box_handler($item)
+function alumnes_form($item)
 {
     ?>
 

@@ -27,6 +27,7 @@ class DataTable extends WP_List_Table
     function set_table_name($name)
     {
         $this->table_name = $name;
+        
     }
 
     function get_table_name()
@@ -121,7 +122,8 @@ class DataTable extends WP_List_Table
     function column_default($item, $column_name)
     {
         if (isset($column_name) && $column_name == $this->column_name_links) {
-            $actions = array(
+            $actions = array
+            (
                 'edit' => sprintf('<a href="?page=%s&action=%s&%s=%s">Editar</a>', $this->get_edit_form(), 'edit', $this->table_name, $item['id']),
                 'delete' => sprintf('<a href="?page=%s&action=%s&%s=%s">Esborrar</a>', $_REQUEST['page'], 'delete', $this->table_name, $item['id']),
             );

@@ -18,10 +18,10 @@ function libs_import()
   wp_localize_script('bc-alumnes-script', 'ajaxobj', array('url' => admin_url('admin-ajax.php')));
   wp_enqueue_script('bc-alumnes-script');
 }
+add_action('wp_enqueue_scripts', 'libs_import');
 
 add_action('wp_ajax_obtenir_dades', 'ajax_answering');
 add_action('wp_ajax_nopriv_obtenir_dades', 'ajax_answering');
-add_action('wp_enqueue_scripts', 'libs_import');
 
 /**
  * Funció que s'executa en resposta a la crida ajax de petició de dades del DataTable del frontend
@@ -57,7 +57,7 @@ add_shortcode('alumnes', 'alumnes_table');
 
 /** 
  * Funció que mostra una taula d'alumnes quan es demana el seu render a través
- * d'un shortcode [alumnes_table]
+ * d'un shortcode [alumnes]
  */
 function alumnes_table()
 {
